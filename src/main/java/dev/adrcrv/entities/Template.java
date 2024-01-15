@@ -1,3 +1,4 @@
+package dev.adrcrv.entities;
 // package dev.adrcrv.entity;
 
 // import jakarta.persistence.Entity;

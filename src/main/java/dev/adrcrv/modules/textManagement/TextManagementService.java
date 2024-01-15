@@ -1,4 +1,4 @@
-package dev.adrcrv.module.text_management;
+package dev.adrcrv.modules.textManagement;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
