@@ -1,4 +1,4 @@
-package dev.adrcrv.modules.textManagement;
+package dev.adrcrv.validations;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,16 +7,19 @@ import dev.adrcrv.constants.EncryptConstant;
 import jakarta.validation.constraints.AssertTrue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 @Data
+@SuperBuilder()
 @AllArgsConstructor
-public class TextManagementValidation {
+public class TextManagementPostValidation {
     private boolean encryption;
     private Integer keySize;
     private String privateKeyPassword;
 
     @AssertTrue(message = "The field privateKeyPassword is required")
     private boolean isPrivateKeyPasswordRequired() {
+        System.out.println(this.encryption);
         boolean hasEncryption = this.encryption == true;
         boolean hasPrivateKeyPassword = this.privateKeyPassword != null;
         boolean hasEncryptionAndPrivateKeyPassword = hasEncryption && hasPrivateKeyPassword;

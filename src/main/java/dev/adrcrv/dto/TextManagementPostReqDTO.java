@@ -1,13 +1,21 @@
-package dev.adrcrv.modules.textManagement;
+package dev.adrcrv.dto;
 
+import org.hibernate.validator.constraints.UUID;
+
+import dev.adrcrv.validations.TextManagementPostValidation;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 @Data
+@SuperBuilder()
 @EqualsAndHashCode(callSuper = false)
-public class TextManagementDTO extends TextManagementValidation {
+public class TextManagementPostReqDTO extends TextManagementPostValidation {
+    @UUID
+    private String id;
+
     @NotEmpty
     private String textData;
 
@@ -18,9 +26,12 @@ public class TextManagementDTO extends TextManagementValidation {
     private Integer keySize;
 
     // Custom Validation Extended
+    private String privateKey;
+
+    // Standard
     private String privateKeyPassword;
 
-    public TextManagementDTO(String textData, boolean encryption, Integer keySize, String privateKeyPassword) {
+    public TextManagementPostReqDTO(String textData, boolean encryption, Integer keySize, String privateKeyPassword) {
         super(encryption, keySize, privateKeyPassword);
         this.textData = textData;
         this.encryption = encryption;
