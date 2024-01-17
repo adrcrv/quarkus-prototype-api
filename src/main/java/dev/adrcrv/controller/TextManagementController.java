@@ -1,6 +1,7 @@
 package dev.adrcrv.controller;
 
 import dev.adrcrv.dto.TextManagementGetReqDTO;
+import dev.adrcrv.dto.TextManagementGetResDTO;
 import dev.adrcrv.dto.TextManagementPostReqDTO;
 import dev.adrcrv.dto.TextManagementPostResDTO;
 import dev.adrcrv.service.TextManagementService;
@@ -32,7 +33,7 @@ public class TextManagementController {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getById(@Valid @BeanParam TextManagementGetReqDTO params) {
         Long id = params.getId();
-        TextManagementPostResDTO payload = textManagementService.getById(id);
+        TextManagementGetResDTO payload = textManagementService.getById(id);
         return Response.ok(payload).build();
     }
 }

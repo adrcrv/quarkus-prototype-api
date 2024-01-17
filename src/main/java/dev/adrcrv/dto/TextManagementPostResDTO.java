@@ -1,6 +1,5 @@
 package dev.adrcrv.dto;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -9,6 +8,5 @@ public class TextManagementPostResDTO {
     @NotNull
     private Long id;
 
-    @NotEmpty
-    private String privateKey;
+    private String privateKey;    
 }
