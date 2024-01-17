@@ -31,9 +31,8 @@ public class TextManagementController {
 
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getById(@Valid @BeanParam TextManagementGetReqDTO params) {
-        Long id = params.getId();
-        TextManagementGetResDTO payload = textManagementService.getById(id);
+    public Response getByParams(@Valid @BeanParam TextManagementGetReqDTO params) throws Exception {
+        TextManagementGetResDTO payload = textManagementService.getByParams(params);
         return Response.ok(payload).build();
     }
 }

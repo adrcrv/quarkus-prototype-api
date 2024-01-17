@@ -10,4 +10,14 @@ public class TextManagementGetReqDTO {
     @NotNull
     @RestQuery
     private Long id;
+
+    @RestQuery
+    private String privateKey;
+    
+    @RestQuery
+    private String privateKeyPassword;
+
+    public String getPrivateKey() {
+        return privateKey != null ? privateKey.replace("\s", "+") : null;
+    }
 }

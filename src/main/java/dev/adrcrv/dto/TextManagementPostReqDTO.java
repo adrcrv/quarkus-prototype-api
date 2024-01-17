@@ -8,6 +8,7 @@ import dev.adrcrv.constant.EncryptConstant;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
@@ -22,6 +23,7 @@ public class TextManagementPostReqDTO {
     private Integer keySize;
 
     // Custom Validation
+    @Size(min = 8, max = 128)
     private String privateKeyPassword;
 
     @AssertTrue(message = "The field privateKeyPassword is required")

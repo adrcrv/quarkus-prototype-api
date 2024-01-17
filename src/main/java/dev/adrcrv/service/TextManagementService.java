@@ -3,6 +3,8 @@ package dev.adrcrv.service;
 import java.util.Set;
 
 import dev.adrcrv.dto.KeyPairDTO;
+import dev.adrcrv.dto.TextManagementEncryptedDataDTO;
+import dev.adrcrv.dto.TextManagementGetReqDTO;
 import dev.adrcrv.dto.TextManagementGetResDTO;
 import dev.adrcrv.dto.TextManagementPostReqDTO;
 import dev.adrcrv.dto.TextManagementPostResDTO;
@@ -12,7 +14,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
+import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.ServiceUnavailableException;
 
@@ -27,30 +31,68 @@ public class TextManagementService {
     @Inject
     private EncryptionService encryptionService;
 
-    public TextManagementGetResDTO getById(Long id) {
-        TextManagement data = textManagementRepository.findById(id);
+    @Transactional
+    public TextManagementGetResDTO getByParams(TextManagementGetReqDTO params) throws Exception {
+        TextManagement data = textManagementRepository.findById(params.getId());
 
         if (data == null) {
             throw new NotFoundException();
         }
 
-        TextManagementGetResDTO payload = getPayloadBuilder(data);
+        TextManagementGetResDTO payload = data.getEncryption() ? getEncryptedData(params, data) : getStandardData(data);
+        Set<ConstraintViolation<TextManagementGetResDTO>> payloadViolations = validator.validate(payload);
 
-        Set<ConstraintViolation<TextManagementGetResDTO>> violations = isGetDataValid(payload);
-        
-        if (!violations.isEmpty()) {
+        if (!payloadViolations.isEmpty()) {
             throw new ServiceUnavailableException();
         }
 
         return payload;
     }
 
-    private TextManagementGetResDTO getPayloadBuilder(TextManagement data) {
+    private TextManagementGetResDTO getEncryptedData(TextManagementGetReqDTO params, TextManagement data) throws Exception {
+
+        Set<ConstraintViolation<TextManagementEncryptedDataDTO>> dataViolations = encryptedDataViolations(params, data);
+
+        if (!dataViolations.isEmpty()) {
+            throw new ConstraintViolationException(dataViolations);
+        }
+
+        String privateKeyEncrypted = data.getPrivateKey();
+        String privateKeyPassword = params.getPrivateKeyPassword();
+        Integer keySize = data.getKeySize();
+
+        String privateKeyDecrypted = encryptionService.decryptKey(privateKeyEncrypted, privateKeyPassword, keySize);
+
+        if (privateKeyDecrypted == null || !privateKeyDecrypted.equals(params.getPrivateKey())) {
+            throw new ForbiddenException();
+        }
+
+        String textData = encryptionService.decrypt(data.getTextData(), params.getPrivateKey());
+
+        TextManagementGetResDTO payload = new TextManagementGetResDTO();
+        payload.setId(data.getId());
+        payload.setTextData(textData);
+        payload.setEncryption(data.getEncryption());
+
+        return payload;
+    }
+
+    private Set<ConstraintViolation<TextManagementEncryptedDataDTO>> encryptedDataViolations(TextManagementGetReqDTO params, TextManagement data) {
+
+        TextManagementEncryptedDataDTO validations = new TextManagementEncryptedDataDTO();
+        validations.setId(data.getId());
+        validations.setPrivateKey(params.getPrivateKey());
+        validations.setPrivateKeyPassword(params.getPrivateKeyPassword());
+
+        Set<ConstraintViolation<TextManagementEncryptedDataDTO>> violations = validator.validate(validations);
+        return violations;
+    }
+
+    private TextManagementGetResDTO getStandardData(TextManagement data) {
         TextManagementGetResDTO payload = new TextManagementGetResDTO();
         payload.setId(data.getId());
         payload.setTextData(data.getTextData());
         payload.setEncryption(data.getEncryption());
-        payload.setKeySize(data.getKeySize());
         return payload;
     }
 
@@ -62,8 +104,7 @@ public class TextManagementService {
             return payload;
         }
 
-        Integer keySize = body.getKeySize();
-        KeyPairDTO keyPair = encryptionService.generateKeyPair(keySize);
+        KeyPairDTO keyPair = encryptionService.generateKeyPair(body.getKeySize());
         String privateKey = keyPair.getPrivateKey();
 
         TextManagement data = createEncryptedData(body, keyPair);
@@ -89,21 +130,19 @@ public class TextManagementService {
     }
 
     private TextManagement createEncryptedData(TextManagementPostReqDTO body, KeyPairDTO keyPair) throws Exception {
-        Integer keySize = body.getKeySize();
-        String textData = body.getTextData();
-        Boolean encryption = body.getEncryption();
-        String privateKeyPassword = body.getPrivateKeyPassword();
-
         String privateKey = keyPair.getPrivateKey();
         String publicKey = keyPair.getPublicKey();
 
+        String privateKeyPassword = body.getPrivateKeyPassword();
+        Integer keySize = body.getKeySize();
+
         String privateKeyEncrypted = encryptionService.encryptKey(privateKey, privateKeyPassword, keySize);
-        String dataEncrypted = encryptionService.encrypt(textData, publicKey);
+        String dataEncrypted = encryptionService.encrypt(body.getTextData(), publicKey);
 
         TextManagement data = new TextManagement();
         data.setKeySize(keySize);
         data.setTextData(dataEncrypted);
-        data.setEncryption(encryption);
+        data.setEncryption(body.getEncryption());
         data.setPrivateKey(privateKeyEncrypted);
         data.setPublicKey(publicKey);
 
@@ -117,9 +156,5 @@ public class TextManagementService {
         payload.setId(data.getId());
         payload.setPrivateKey(privateKey);
         return payload;
-    }
-
-    private Set<ConstraintViolation<TextManagementGetResDTO>> isGetDataValid(TextManagementGetResDTO data) {
-        return validator.validate(data);
     }
 }

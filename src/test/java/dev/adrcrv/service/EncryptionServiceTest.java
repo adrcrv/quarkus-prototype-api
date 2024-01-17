@@ -1,12 +1,5 @@
 package dev.adrcrv.service;
 
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.Base64;
-
 import javax.crypto.SecretKey;
 
 import org.junit.jupiter.api.Assertions;

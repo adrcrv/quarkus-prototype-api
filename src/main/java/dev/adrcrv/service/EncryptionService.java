@@ -9,6 +9,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -22,7 +23,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class EncryptionService {
     private static final String RSA = "RSA";
     private static final String AES = "AES";
-    private static final String TEMP_SALT = "a1a2b88c-f695-42a4-b350-53a391ccddea";
+    private static final String FIXED_SALT = "a1a2b88c-f695-42a4-b350-53a391ccddea";
     private static final String PBKDF2_HMAC_SHA256 = "PBKDF2WithHmacSHA256";
     private static final Integer INTERACTIONS = 65536;
 
@@ -67,7 +68,7 @@ public class EncryptionService {
 
     public SecretKey generateSecretKeyFromPassword(String password, Integer keySize) throws Exception {
         char[] passwordChar = password.toCharArray();
-        byte[] salt = TEMP_SALT.getBytes();
+        byte[] salt = FIXED_SALT.getBytes();
 
         SecretKeyFactory factory = SecretKeyFactory.getInstance(PBKDF2_HMAC_SHA256);
         PBEKeySpec keySpec = new PBEKeySpec(passwordChar, salt, INTERACTIONS, keySize / 8);
@@ -89,14 +90,18 @@ public class EncryptionService {
     }
 
     public String decryptKey(String privateKey, String password, Integer keySize) throws Exception {
-        byte[] privateKeyDecoded = Base64.getDecoder().decode(privateKey);
-        SecretKey secretKey = generateSecretKeyFromPassword(password, keySize);
+        try {
+            byte[] privateKeyDecoded = Base64.getDecoder().decode(privateKey);
+            SecretKey secretKey = generateSecretKeyFromPassword(password, keySize);
 
-        Cipher cipher = Cipher.getInstance(AES);
-        cipher.init(Cipher.DECRYPT_MODE, secretKey);
-        byte[] privateKeyDecrypted = cipher.doFinal(privateKeyDecoded);
+            Cipher cipher = Cipher.getInstance(AES);
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            byte[] privateKeyDecrypted = cipher.doFinal(privateKeyDecoded);
 
-        return Base64.getEncoder().encodeToString(privateKeyDecrypted);
+            return Base64.getEncoder().encodeToString(privateKeyDecrypted);
+        } catch (BadPaddingException exception) {
+            return null;
+        }
     }
 
     private PrivateKey restorePrivateKey(String privateKey) throws Exception {
