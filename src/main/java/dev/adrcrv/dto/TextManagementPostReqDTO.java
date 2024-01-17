@@ -16,10 +16,12 @@ public class TextManagementPostReqDTO {
     private String textData;
 
     @NotNull
-    private boolean encryption;
+    private Boolean encryption;
 
+    // Custom Validation
     private Integer keySize;
 
+    // Custom Validation
     private String privateKeyPassword;
 
     @AssertTrue(message = "The field privateKeyPassword is required")

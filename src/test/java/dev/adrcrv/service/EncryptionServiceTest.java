@@ -1,14 +1,18 @@
 package dev.adrcrv.service;
 
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Base64;
 
 import javax.crypto.SecretKey;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import dev.adrcrv.dto.KeyPairDTO;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 
@@ -24,57 +28,48 @@ class EncryptionServiceTest {
 
     @Test
     void expectGenerateKeyPairsToAssertNotEquals() throws Exception {
-        KeyPair keyPair1 = encryptionService.generateKeyPair(KEY_SIZE);
-        KeyPair keyPair2 = encryptionService.generateKeyPair(KEY_SIZE);
+        KeyPairDTO keyPair1 = encryptionService.generateKeyPair(KEY_SIZE);
+        KeyPairDTO keyPair2 = encryptionService.generateKeyPair(KEY_SIZE);
 
-        byte[] privateKeyEncoded1 = keyPair1.getPrivate().getEncoded();
-        byte[] privateKeyEncoded2 = keyPair2.getPrivate().getEncoded();
-        byte[] publicKeyEncoded1 = keyPair1.getPublic().getEncoded();
-        byte[] publicKeyEncoded2 = keyPair2.getPublic().getEncoded();
+        String privateKeyEncoded1 = keyPair1.getPrivateKey();
+        String privateKeyEncoded2 = keyPair2.getPrivateKey();
+        String publicKeyEncoded1 = keyPair1.getPublicKey();
+        String publicKeyEncoded2 = keyPair2.getPublicKey();
 
-        String privateKeyEncodedString1 = new String(privateKeyEncoded1);
-        String privateKeyEncodedString2 = new String(privateKeyEncoded2);
-        String publicKeyEncodedString1 = new String(publicKeyEncoded1);
-        String publicKeyEncodedString2 = new String(publicKeyEncoded2);
-
-        Assertions.assertNotEquals(privateKeyEncodedString1, privateKeyEncodedString2);
-        Assertions.assertNotEquals(publicKeyEncodedString1, publicKeyEncodedString2);
-        Assertions.assertNotEquals(privateKeyEncodedString1, publicKeyEncodedString1);
-        Assertions.assertNotEquals(privateKeyEncodedString2, publicKeyEncodedString2);
+        Assertions.assertNotEquals(privateKeyEncoded1, privateKeyEncoded2);
+        Assertions.assertNotEquals(publicKeyEncoded1, publicKeyEncoded2);
+        Assertions.assertNotEquals(privateKeyEncoded1, publicKeyEncoded1);
+        Assertions.assertNotEquals(privateKeyEncoded2, publicKeyEncoded2);
     }
 
     @Test
     void expectEncryptDatasToAssertNotEquals() throws Exception {
-        KeyPair keyPair = encryptionService.generateKeyPair(KEY_SIZE);
-        PublicKey publicKey = keyPair.getPublic();
+        KeyPairDTO keyPair = encryptionService.generateKeyPair(KEY_SIZE);
+        String publicKey = keyPair.getPublicKey();
 
-        byte[] dataEncoded1 = encryptionService.encrypt(MESSAGE, publicKey);
-        byte[] dataEncoded2 = encryptionService.encrypt(MESSAGE, publicKey);
+        String dataEncoded1 = encryptionService.encrypt(MESSAGE, publicKey);
+        String dataEncoded2 = encryptionService.encrypt(MESSAGE, publicKey);
 
-        String dataEncodedString1 = new String(dataEncoded1);
-        String dataEncodedString2 = new String(dataEncoded2);
-
-        Assertions.assertNotEquals(dataEncodedString1, dataEncodedString2);
+        Assertions.assertNotEquals(dataEncoded1, dataEncoded2);
     }
 
     @Test
     void expectEncryptEncodedAndDecodedToAssertNotEquals() throws Exception {
-        KeyPair keyPair = encryptionService.generateKeyPair(KEY_SIZE);
-        PublicKey publicKey = keyPair.getPublic();
+        KeyPairDTO keyPair = encryptionService.generateKeyPair(KEY_SIZE);
+        String publicKey = keyPair.getPublicKey();
 
-        byte[] dataEncoded1 = encryptionService.encrypt(MESSAGE, publicKey);
-        String dataEncodedString1 = new String(dataEncoded1);
+        String dataEncoded = encryptionService.encrypt(MESSAGE, publicKey);
 
-        Assertions.assertNotEquals(MESSAGE, dataEncodedString1);
+        Assertions.assertNotEquals(MESSAGE, dataEncoded);
     }
 
     @Test
     void expectDecryptMessageAndDecodedToAssertEquals() throws Exception {
-        KeyPair keyPair = encryptionService.generateKeyPair(KEY_SIZE);
-        PublicKey publicKey = keyPair.getPublic();
-        PrivateKey privateKey = keyPair.getPrivate();
+        KeyPairDTO keyPair = encryptionService.generateKeyPair(KEY_SIZE);
+        String publicKey = keyPair.getPublicKey();
+        String privateKey = keyPair.getPrivateKey();
 
-        byte[] dataEncoded = encryptionService.encrypt(MESSAGE, publicKey);
+        String dataEncoded = encryptionService.encrypt(MESSAGE, publicKey);
         String dataDecoded = encryptionService.decrypt(dataEncoded, privateKey);
 
         Assertions.assertEquals(MESSAGE, dataDecoded);
@@ -82,15 +77,14 @@ class EncryptionServiceTest {
 
     @Test
     void expectDecryptEncodedAndDecodedToAssertNotEquals() throws Exception {
-        KeyPair keyPair = encryptionService.generateKeyPair(KEY_SIZE);
-        PublicKey publicKey = keyPair.getPublic();
-        PrivateKey privateKey = keyPair.getPrivate();
+        KeyPairDTO keyPair = encryptionService.generateKeyPair(KEY_SIZE);
+        String publicKey = keyPair.getPublicKey();
+        String privateKey = keyPair.getPrivateKey();
 
-        byte[] dataEncoded = encryptionService.encrypt(MESSAGE, publicKey);
-        String dataEncodedString = new String(dataEncoded);
-        String dataDecodedString = encryptionService.decrypt(dataEncoded, privateKey);
+        String dataEncoded = encryptionService.encrypt(MESSAGE, publicKey);
+        String dataDecoded = encryptionService.decrypt(dataEncoded, privateKey);
 
-        Assertions.assertNotEquals(dataEncodedString, dataDecodedString);
+        Assertions.assertNotEquals(dataEncoded, dataDecoded);
     }
 
     @Test
@@ -111,51 +105,43 @@ class EncryptionServiceTest {
 
     @Test
     void expectEncryptKeyEncodedAndDecodedToAssertNotEquals() throws Exception {
-        KeyPair keyPair = encryptionService.generateKeyPair(KEY_SIZE);
-        PrivateKey privateKey = keyPair.getPrivate();
-        String privateKeyString = new String(privateKey.getEncoded());
+        KeyPairDTO keyPair = encryptionService.generateKeyPair(KEY_SIZE);
+        String privateKey = keyPair.getPrivateKey();
+        String privateKeyEncoded = encryptionService.encryptKey(privateKey, PASSWORD, KEY_SIZE);
 
-        byte[] privateKeyEncoded = encryptionService.encryptKey(privateKey, PASSWORD, KEY_SIZE);
-        String privateKeyEncodedString = new String(privateKeyEncoded);
-
-        Assertions.assertNotEquals(privateKeyEncodedString, privateKeyString);
+        Assertions.assertNotEquals(privateKeyEncoded, privateKey);
     }
 
     @Test
     void expectEncryptKeyEncodedToAssertEquals() throws Exception {
-        KeyPair keyPair = encryptionService.generateKeyPair(KEY_SIZE);
-        PrivateKey privateKey = keyPair.getPrivate();
+        KeyPairDTO keyPair = encryptionService.generateKeyPair(KEY_SIZE);
+        String privateKey = keyPair.getPrivateKey();
 
-        byte[] privateKeyEncoded1 = encryptionService.encryptKey(privateKey, PASSWORD, KEY_SIZE);
-        byte[] privateKeyEncoded2 = encryptionService.encryptKey(privateKey, PASSWORD, KEY_SIZE);
+        String privateKeyEncoded1 = encryptionService.encryptKey(privateKey, PASSWORD, KEY_SIZE);
+        String privateKeyEncoded2 = encryptionService.encryptKey(privateKey, PASSWORD, KEY_SIZE);
 
-        String privateKeyEncodedString1 = new String(privateKeyEncoded1);
-        String privateKeyEncodedString2 = new String(privateKeyEncoded2);
-
-        Assertions.assertEquals(privateKeyEncodedString1, privateKeyEncodedString2);
+        Assertions.assertEquals(privateKeyEncoded1, privateKeyEncoded2);
     }
 
     @Test
     void expectDecryptKeyAndDecodedToAssertEquals() throws Exception {
-        KeyPair keyPair = encryptionService.generateKeyPair(KEY_SIZE);
-        PrivateKey privateKey = keyPair.getPrivate();
-        String privateKeyString = new String(privateKey.getEncoded());
+        KeyPairDTO keyPair = encryptionService.generateKeyPair(KEY_SIZE);
+        String privateKey = keyPair.getPrivateKey();
 
-        byte[] privateKeyEncoded = encryptionService.encryptKey(privateKey, PASSWORD, KEY_SIZE);
+        String privateKeyEncoded = encryptionService.encryptKey(privateKey, PASSWORD, KEY_SIZE);
         String privateKeyDecoded = encryptionService.decryptKey(privateKeyEncoded, PASSWORD, KEY_SIZE);
 
-        Assertions.assertEquals(privateKeyDecoded, privateKeyString);
+        Assertions.assertEquals(privateKeyDecoded, privateKey);
     }
 
     @Test
     void expectDecryptKeyDecodedAndEncodedToAssertNotEquals() throws Exception {
-        KeyPair keyPair = encryptionService.generateKeyPair(KEY_SIZE);
-        PrivateKey privateKey = keyPair.getPrivate();
+        KeyPairDTO keyPair = encryptionService.generateKeyPair(KEY_SIZE);
+        String privateKey = keyPair.getPrivateKey();
 
-        byte[] privateKeyEncoded = encryptionService.encryptKey(privateKey, PASSWORD, KEY_SIZE);
+        String privateKeyEncoded = encryptionService.encryptKey(privateKey, PASSWORD, KEY_SIZE);
         String privateKeyDecoded = encryptionService.decryptKey(privateKeyEncoded, PASSWORD, KEY_SIZE);
-        String privateKeyEncodedString = new String(privateKeyEncoded);
 
-        Assertions.assertNotEquals(privateKeyEncodedString, privateKeyDecoded);
+        Assertions.assertNotEquals(privateKeyEncoded, privateKeyDecoded);
     }
 }

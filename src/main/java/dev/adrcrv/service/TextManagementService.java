@@ -1,5 +1,6 @@
 package dev.adrcrv.service;
 
+import java.security.KeyPair;
 import java.util.Set;
 
 import dev.adrcrv.dto.TextManagementPostReqDTO;
@@ -22,6 +23,9 @@ public class TextManagementService {
     @Inject
     private TextManagementRepository textManagementRepository;
 
+    @Inject
+    private EncryptionService encryptionService;
+
     public TextManagementPostResDTO getById(Long id) {
         TextManagement data = textManagementRepository.findById(id);
 
@@ -42,15 +46,41 @@ public class TextManagementService {
     }
 
     @Transactional
-    public TextManagementPostResDTO create(TextManagementPostReqDTO body) {
+    public TextManagementPostResDTO create(TextManagementPostReqDTO body) throws Exception {
+        if (!body.getEncryption()) {
+            TextManagement data = createStandardData(body);
+            TextManagementPostResDTO payload = creationStandardPayloadBuilder(data);
+            return payload;
+        }
+        return null;
+        // Integer keySize = body.getKeySize();
+        // KeyPair keyPair = encryptionService.generateKeyPair(keySize);
+    }
+
+    private TextManagement createStandardData(TextManagementPostReqDTO body) {
         TextManagement data = new TextManagement();
         data.setTextData(body.getTextData());
+        data.setEncryption(body.getEncryption());
 
         textManagementRepository.persistAndFlush(data);
 
+        return data;
+    }
+
+    private TextManagement createEncryptedData(TextManagementPostReqDTO body) {
+        TextManagement data = new TextManagement();
+        data.setTextData(body.getTextData());
+        data.setEncryption(body.getEncryption());
+        data.setKeySize(body.getKeySize());
+
+        textManagementRepository.persistAndFlush(data);
+
+        return data;
+    }
+
+    private TextManagementPostResDTO creationStandardPayloadBuilder(TextManagement data) {
         TextManagementPostResDTO payload = new TextManagementPostResDTO();
         payload.setId(data.getId());
-
         return payload;
     }
 

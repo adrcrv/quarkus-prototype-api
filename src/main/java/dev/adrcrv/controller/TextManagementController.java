@@ -23,7 +23,7 @@ public class TextManagementController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(@Valid TextManagementPostReqDTO body) {
+    public Response create(@Valid TextManagementPostReqDTO body) throws Exception {
         TextManagementPostResDTO payload = textManagementService.create(body);
         return Response.ok(payload).build();
     }
