@@ -36,9 +36,13 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-hibernate-orm</artifactId>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-hibernate-validator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-orm-panache</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -47,6 +51,14 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-reactive</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-h2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-config-yaml</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -64,11 +76,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-		  <groupId>org.projectlombok</groupId>
-		  <artifactId>lombok</artifactId>
-		  <version>1.18.30</version>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.30</version>
       <scope>provided</scope>
-		</dependency>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -86,6 +98,9 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <jvmArgs>-Dnet.bytebuddy.experimental=true</jvmArgs>
+        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>

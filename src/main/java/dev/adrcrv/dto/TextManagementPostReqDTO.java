@@ -1,41 +1,49 @@
 package dev.adrcrv.dto;
 
-import org.hibernate.validator.constraints.UUID;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import dev.adrcrv.validations.TextManagementPostValidation;
+import dev.adrcrv.constant.EncryptConstant;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.SuperBuilder;
 
 @Data
-@SuperBuilder()
-@EqualsAndHashCode(callSuper = false)
-public class TextManagementPostReqDTO extends TextManagementPostValidation {
-    @UUID
-    private String id;
-
+public class TextManagementPostReqDTO {
     @NotEmpty
     private String textData;
 
     @NotNull
     private boolean encryption;
 
-    // Custom Validation Extended
     private Integer keySize;
 
-    // Custom Validation Extended
-    private String privateKey;
-
-    // Standard
     private String privateKeyPassword;
 
-    public TextManagementPostReqDTO(String textData, boolean encryption, Integer keySize, String privateKeyPassword) {
-        super(encryption, keySize, privateKeyPassword);
-        this.textData = textData;
-        this.encryption = encryption;
-        this.keySize = keySize;
-        this.privateKeyPassword = privateKeyPassword;
+    @AssertTrue(message = "The field privateKeyPassword is required")
+    private boolean isPrivateKeyPasswordRequired() {
+        if (!this.encryption) {
+            return true;
+        }
+        return this.privateKeyPassword != null;
+    }
+
+    @AssertTrue(message = "The field keySize is required")
+    private boolean isKeySizeRequired() {
+        if (!this.encryption) {
+            return true;
+        }
+        return this.keySize != null;
+    }
+
+    @AssertTrue(message = "The field keySize must matches one of the values: [1024, 2048, 4096]")
+    private boolean isKeySizeOneOfValues() {
+        if (!this.encryption) {
+            return true;
+        }
+        List<Integer> matchNumbers = new ArrayList<>(Arrays.asList(EncryptConstant.KEY_SIZES));
+        return matchNumbers.contains(this.keySize);
     }
 }

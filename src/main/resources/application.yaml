@@ -1,0 +1,12 @@
+quarkus:
+  datasource:
+    db-kind: h2
+    jdbc:
+      url: jdbc:h2:mem:default
+
+  resteasy-reactive:
+    path: /api/
+
+  hibernate-orm:
+    database:
+      generation: drop-and-create
