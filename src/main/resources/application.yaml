@@ -19,3 +19,7 @@ quarkus:
     category:
       org.hibernate:
         level: INFO
+
+  swagger-ui:
+    always-include: true
+    default-models-expand-depth: -1

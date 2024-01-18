@@ -1,5 +1,8 @@
 package dev.adrcrv.controller;
 
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.jboss.logging.Logger;
 
 import dev.adrcrv.dto.TextManagementGetReqDTO;
@@ -26,6 +29,12 @@ public class TextManagementController {
     @Inject
     private Logger log;
 
+    @Operation(summary = "Create Text Data")
+    @APIResponses(value = {
+        @APIResponse(responseCode = "200", description = "Successfully created"),
+        @APIResponse(responseCode = "400", description = "Bad Request"),
+        @APIResponse(responseCode = "500", description = "Unexpected Error")
+    })
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -36,6 +45,14 @@ public class TextManagementController {
         return Response.ok(payload).build();
     }
 
+    @Operation(summary = "Retrieve Text Data")
+    @APIResponses(value = {
+        @APIResponse(responseCode = "200", description = "Successfully Retrieved"),
+        @APIResponse(responseCode = "400", description = "Bad Request"),
+        @APIResponse(responseCode = "403", description = "Invalid Private Key or Password"),
+        @APIResponse(responseCode = "503", description = "Data can't be retrieved"),
+        @APIResponse(responseCode = "500", description = "Unexpected Error")
+    })
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     public final Response getByParams(@Valid @BeanParam final TextManagementGetReqDTO params) throws Exception {
