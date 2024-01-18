@@ -4,7 +4,7 @@ import dev.adrcrv.dto.TextManagementGetReqDTO;
 import dev.adrcrv.dto.TextManagementGetResDTO;
 import dev.adrcrv.dto.TextManagementPostReqDTO;
 import dev.adrcrv.dto.TextManagementPostResDTO;
-import dev.adrcrv.service.TextManagementService;
+import dev.adrcrv.service.ITextManagementService;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
@@ -19,7 +19,7 @@ import jakarta.ws.rs.core.Response;
 @Path("v1/text-management")
 public class TextManagementController {
     @Inject
-    private TextManagementService textManagementService;
+    private ITextManagementService textManagementService;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

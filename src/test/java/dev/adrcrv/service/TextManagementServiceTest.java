@@ -27,7 +27,7 @@ import jakarta.ws.rs.ServiceUnavailableException;
 @TestInstance(Lifecycle.PER_CLASS)
 public class TextManagementServiceTest {
     @Inject
-    private TextManagementService textManagementService;
+    private ITextManagementService textManagementService;
 
     private static Long standardId;
     private static Long encryptedIt;

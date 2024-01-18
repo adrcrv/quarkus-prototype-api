@@ -20,7 +20,7 @@ import dev.adrcrv.dto.KeyPairDTO;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class EncryptionService {
+public class EncryptionService implements IEncryptionService {
     private static final String RSA = "RSA";
     private static final String AES = "AES";
     private static final String FIXED_SALT = "a1a2b88c-f695-42a4-b350-53a391ccddea";
@@ -80,8 +80,7 @@ public class EncryptionService {
 
     public final String encryptKey(final String privateKey, final String password, final Integer keySize)
     throws Exception {
-        EncryptionService encryptionService = new EncryptionService();
-        SecretKey secretKey = encryptionService.generateSecretKeyFromPassword(password, keySize);
+        SecretKey secretKey = generateSecretKeyFromPassword(password, keySize);
         PrivateKey privateKeyDecoded = restorePrivateKey(privateKey);
 
         Cipher cipher = Cipher.getInstance(AES);

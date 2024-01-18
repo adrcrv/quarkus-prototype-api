@@ -9,7 +9,7 @@ import dev.adrcrv.dto.TextManagementGetResDTO;
 import dev.adrcrv.dto.TextManagementPostReqDTO;
 import dev.adrcrv.dto.TextManagementPostResDTO;
 import dev.adrcrv.entity.TextManagement;
-import dev.adrcrv.repository.TextManagementRepository;
+import dev.adrcrv.repository.ITextManagementRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -21,15 +21,15 @@ import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.ServiceUnavailableException;
 
 @ApplicationScoped
-public class TextManagementService {
+public class TextManagementService implements ITextManagementService {
     @Inject
     private Validator validator;
 
     @Inject
-    private TextManagementRepository textManagementRepository;
+    private ITextManagementRepository textManagementRepository;
 
     @Inject
-    private EncryptionService encryptionService;
+    private IEncryptionService encryptionService;
 
     @Transactional
     public final TextManagementGetResDTO getByParams(final TextManagementGetReqDTO params) throws Exception {
@@ -155,7 +155,7 @@ public class TextManagementService {
     }
 
     private TextManagementPostResDTO creationEncryptedPayloadBuilder(
-            final TextManagement data, final String privateKey) {
+    final TextManagement data, final String privateKey) {
         TextManagementPostResDTO payload = new TextManagementPostResDTO();
         payload.setId(data.getId());
         payload.setPrivateKey(privateKey);

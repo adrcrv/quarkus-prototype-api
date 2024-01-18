@@ -15,7 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import dev.adrcrv.dto.TextManagementPostReqDTO;
 import dev.adrcrv.dto.TextManagementPostResDTO;
-import dev.adrcrv.service.TextManagementService;
+import dev.adrcrv.service.ITextManagementService;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
@@ -24,7 +24,7 @@ import jakarta.inject.Inject;
 @TestInstance(Lifecycle.PER_CLASS)
 public class TextManagementControllerTest {
     @Inject
-    private TextManagementService textManagementService;
+    private ITextManagementService textManagementService;
 
     private static Long standardId;
     private static Long encryptedId;

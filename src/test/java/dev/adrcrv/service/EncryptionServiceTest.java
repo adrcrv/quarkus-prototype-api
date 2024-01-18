@@ -12,7 +12,7 @@ import jakarta.inject.Inject;
 @QuarkusTest
 public class EncryptionServiceTest {
     @Inject
-    private EncryptionService encryptionService;
+    private IEncryptionService encryptionService;
 
     private static final Integer KEY_SIZE = 1024;
     private static final String MESSAGE = "Hello World";
