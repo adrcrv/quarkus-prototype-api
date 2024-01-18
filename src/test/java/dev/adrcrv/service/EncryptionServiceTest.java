@@ -10,7 +10,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 
 @QuarkusTest
-class EncryptionServiceTest {
+public class EncryptionServiceTest {
     @Inject
     private EncryptionService encryptionService;
 
@@ -20,7 +20,7 @@ class EncryptionServiceTest {
     private static final String UUID = "3eb954bd-2f82-4f7a-b70d-65c0566470bb";
 
     @Test
-    void expectGenerateKeyPairsToAssertNotEquals() throws Exception {
+    public void expectGenerateKeyPairsToAssertNotEquals() throws Exception {
         KeyPairDTO keyPair1 = encryptionService.generateKeyPair(KEY_SIZE);
         KeyPairDTO keyPair2 = encryptionService.generateKeyPair(KEY_SIZE);
 
@@ -36,7 +36,7 @@ class EncryptionServiceTest {
     }
 
     @Test
-    void expectEncryptDatasToAssertNotEquals() throws Exception {
+    public void expectEncryptDatasToAssertNotEquals() throws Exception {
         KeyPairDTO keyPair = encryptionService.generateKeyPair(KEY_SIZE);
         String publicKey = keyPair.getPublicKey();
 
@@ -47,7 +47,7 @@ class EncryptionServiceTest {
     }
 
     @Test
-    void expectEncryptEncodedAndDecodedToAssertNotEquals() throws Exception {
+    public void expectEncryptEncodedAndDecodedToAssertNotEquals() throws Exception {
         KeyPairDTO keyPair = encryptionService.generateKeyPair(KEY_SIZE);
         String publicKey = keyPair.getPublicKey();
 
@@ -57,7 +57,7 @@ class EncryptionServiceTest {
     }
 
     @Test
-    void expectDecryptMessageAndDecodedToAssertEquals() throws Exception {
+    public void expectDecryptMessageAndDecodedToAssertEquals() throws Exception {
         KeyPairDTO keyPair = encryptionService.generateKeyPair(KEY_SIZE);
         String publicKey = keyPair.getPublicKey();
         String privateKey = keyPair.getPrivateKey();
@@ -69,7 +69,7 @@ class EncryptionServiceTest {
     }
 
     @Test
-    void expectDecryptEncodedAndDecodedToAssertNotEquals() throws Exception {
+    public void expectDecryptEncodedAndDecodedToAssertNotEquals() throws Exception {
         KeyPairDTO keyPair = encryptionService.generateKeyPair(KEY_SIZE);
         String publicKey = keyPair.getPublicKey();
         String privateKey = keyPair.getPrivateKey();
@@ -81,7 +81,7 @@ class EncryptionServiceTest {
     }
 
     @Test
-    void expectGenerateSecretKeysFromDiffPasswordToAssertNotEquals() throws Exception {
+    public void expectGenerateSecretKeysFromDiffPasswordToAssertNotEquals() throws Exception {
         SecretKey secretKeyEncoded = encryptionService.generateSecretKeyFromPassword(PASSWORD, KEY_SIZE);
         SecretKey diffSecretKeyEncoded = encryptionService.generateSecretKeyFromPassword(UUID, KEY_SIZE);
 
@@ -89,7 +89,7 @@ class EncryptionServiceTest {
     }
 
     @Test
-    void expectGenerateSecretKeysFromSamePasswordToAssertEquals() throws Exception {
+    public void expectGenerateSecretKeysFromSamePasswordToAssertEquals() throws Exception {
         SecretKey secretKeyEncoded1 = encryptionService.generateSecretKeyFromPassword(PASSWORD, KEY_SIZE);
         SecretKey secretKeyEncoded2 = encryptionService.generateSecretKeyFromPassword(PASSWORD, KEY_SIZE);
 
@@ -97,7 +97,7 @@ class EncryptionServiceTest {
     }
 
     @Test
-    void expectEncryptKeyEncodedAndDecodedToAssertNotEquals() throws Exception {
+    public void expectEncryptKeyEncodedAndDecodedToAssertNotEquals() throws Exception {
         KeyPairDTO keyPair = encryptionService.generateKeyPair(KEY_SIZE);
         String privateKey = keyPair.getPrivateKey();
         String privateKeyEncoded = encryptionService.encryptKey(privateKey, PASSWORD, KEY_SIZE);
@@ -106,7 +106,7 @@ class EncryptionServiceTest {
     }
 
     @Test
-    void expectEncryptKeyEncodedToAssertEquals() throws Exception {
+    public void expectEncryptKeyEncodedToAssertEquals() throws Exception {
         KeyPairDTO keyPair = encryptionService.generateKeyPair(KEY_SIZE);
         String privateKey = keyPair.getPrivateKey();
 
@@ -117,7 +117,7 @@ class EncryptionServiceTest {
     }
 
     @Test
-    void expectDecryptKeyAndDecodedToAssertEquals() throws Exception {
+    public void expectDecryptKeyAndDecodedToAssertEquals() throws Exception {
         KeyPairDTO keyPair = encryptionService.generateKeyPair(KEY_SIZE);
         String privateKey = keyPair.getPrivateKey();
 
@@ -128,7 +128,7 @@ class EncryptionServiceTest {
     }
 
     @Test
-    void expectDecryptKeyDecodedAndEncodedToAssertNotEquals() throws Exception {
+    public void expectDecryptKeyDecodedAndEncodedToAssertNotEquals() throws Exception {
         KeyPairDTO keyPair = encryptionService.generateKeyPair(KEY_SIZE);
         String privateKey = keyPair.getPrivateKey();
 
