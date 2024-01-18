@@ -2,6 +2,8 @@ package dev.adrcrv.service;
 
 import java.util.Set;
 
+import org.jboss.logging.Logger;
+
 import dev.adrcrv.dto.KeyPairDTO;
 import dev.adrcrv.dto.TextManagementEncryptedDataDTO;
 import dev.adrcrv.dto.TextManagementGetReqDTO;
@@ -31,11 +33,16 @@ public class TextManagementService implements ITextManagementService {
     @Inject
     private IEncryptionService encryptionService;
 
+    @Inject
+    private Logger log;
+
     @Transactional
     public final TextManagementGetResDTO getByParams(final TextManagementGetReqDTO params) throws Exception {
+        log.info("[TextManagement Query] Finding Data By Id");
         TextManagement data = textManagementRepository.findById(params.getId());
 
         if (data == null) {
+            log.info("[TextManagement Query] Throwing NotFoundException: No Data Found");
             throw new NotFoundException();
         }
 
@@ -43,18 +50,21 @@ public class TextManagementService implements ITextManagementService {
         Set<ConstraintViolation<TextManagementGetResDTO>> payloadViolations = validator.validate(payload);
 
         if (!payloadViolations.isEmpty()) {
+            log.info("[TextManagement Query] Throwing ServiceUnavailableException: Constraint Violations");
             throw new ServiceUnavailableException();
         }
 
+        log.info("[TextManagement Query] Data Found");
         return payload;
     }
 
     private TextManagementGetResDTO getEncryptedData(final TextManagementGetReqDTO params, final TextManagement data)
     throws Exception {
-
+        log.info("[TextManagement Query] Decrypting Text Data");
         Set<ConstraintViolation<TextManagementEncryptedDataDTO>> dataViolations = encryptedDataViolations(params, data);
 
         if (!dataViolations.isEmpty()) {
+            log.info("[TextManagement Query] Throwing ConstraintViolationException: Constraint Violations");
             throw new ConstraintViolationException(dataViolations);
         }
 
@@ -65,6 +75,7 @@ public class TextManagementService implements ITextManagementService {
         String privateKeyDecrypted = encryptionService.decryptKey(privateKeyEncrypted, privateKeyPassword, keySize);
 
         if (privateKeyDecrypted == null || !privateKeyDecrypted.equals(params.getPrivateKey())) {
+            log.info("[TextManagement Query] Throwing ForbiddenException: Invalid Private Key or Password");
             throw new ForbiddenException();
         }
 
@@ -74,6 +85,8 @@ public class TextManagementService implements ITextManagementService {
         payload.setId(data.getId());
         payload.setTextData(textData);
         payload.setEncryption(data.getEncryption());
+
+        log.info("[TextManagement Query] Text Data Successfully Decrypted");
 
         return payload;
     }
@@ -100,6 +113,8 @@ public class TextManagementService implements ITextManagementService {
 
     @Transactional
     public final TextManagementPostResDTO create(final TextManagementPostReqDTO body) throws Exception {
+        log.info("[TextManagement Creation] Creating Data");
+
         if (!body.getEncryption()) {
             TextManagement data = createStandardData(body);
             TextManagementPostResDTO payload = creationStandardPayloadBuilder(data);
@@ -116,11 +131,14 @@ public class TextManagementService implements ITextManagementService {
     }
 
     private TextManagement createStandardData(final TextManagementPostReqDTO body) {
+        log.info("[TextManagement Creation] Creating Standard Data");
+
         TextManagement data = new TextManagement();
         data.setTextData(body.getTextData());
         data.setEncryption(body.getEncryption());
 
         textManagementRepository.persistAndFlush(data);
+        log.info("[TextManagement Creation] Standard Data Created");
 
         return data;
     }
@@ -132,7 +150,9 @@ public class TextManagementService implements ITextManagementService {
     }
 
     private TextManagement createEncryptedData(final TextManagementPostReqDTO body, final KeyPairDTO keyPair)
-            throws Exception {
+    throws Exception {
+
+        log.info("[TextManagement Creation] Creating Encrypted Data");
         String privateKey = keyPair.getPrivateKey();
         String publicKey = keyPair.getPublicKey();
 
@@ -150,6 +170,7 @@ public class TextManagementService implements ITextManagementService {
         data.setPublicKey(publicKey);
 
         textManagementRepository.persistAndFlush(data);
+        log.info("[TextManagement Creation] Encrypted Data Created");
 
         return data;
     }

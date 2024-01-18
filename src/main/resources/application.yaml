@@ -13,3 +13,9 @@ quarkus:
 
   jacoco:
     excludes: ["**/entity/**/*", "**/dto/**/*", "**/repository/**/*", "**/constant/**/*", "**/exception/**/*"]
+
+  log:
+    level: INFO
+    category:
+      org.hibernate:
+        level: INFO
