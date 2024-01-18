@@ -24,14 +24,14 @@ public class TextManagementController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(@Valid TextManagementPostReqDTO body) throws Exception {
+    public final Response create(@Valid final TextManagementPostReqDTO body) throws Exception {
         TextManagementPostResDTO payload = textManagementService.create(body);
         return Response.ok(payload).build();
     }
 
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getByParams(@Valid @BeanParam TextManagementGetReqDTO params) throws Exception {
+    public final Response getByParams(@Valid @BeanParam final TextManagementGetReqDTO params) throws Exception {
         TextManagementGetResDTO payload = textManagementService.getByParams(params);
         return Response.ok(payload).build();
     }

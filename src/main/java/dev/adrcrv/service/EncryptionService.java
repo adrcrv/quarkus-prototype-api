@@ -27,7 +27,7 @@ public class EncryptionService {
     private static final String PBKDF2_HMAC_SHA256 = "PBKDF2WithHmacSHA256";
     private static final Integer INTERACTIONS = 65536;
 
-    public KeyPairDTO generateKeyPair(Integer keySize) throws Exception {
+    public final KeyPairDTO generateKeyPair(final Integer keySize) throws Exception {
         KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(RSA);
         keyGenerator.initialize(keySize);
 
@@ -45,7 +45,7 @@ public class EncryptionService {
         return keyPairDTO;
     }
 
-    public String encrypt(String message, String publicKey) throws Exception {
+    public final String encrypt(final String message, final String publicKey) throws Exception {
         PublicKey publicKeyDecoded = restorePublicKey(publicKey);
 
         Cipher cipher = Cipher.getInstance(RSA);
@@ -55,7 +55,7 @@ public class EncryptionService {
         return Base64.getEncoder().encodeToString(encoded);
     }
 
-    public String decrypt(String data, String privateKey) throws Exception {
+    public final String decrypt(final String data, final String privateKey) throws Exception {
         byte[] dataDecoded = Base64.getDecoder().decode(data);
         PrivateKey privateKeyDecoded = restorePrivateKey(privateKey);
 
@@ -66,7 +66,8 @@ public class EncryptionService {
         return new String(decrypted);
     }
 
-    public SecretKey generateSecretKeyFromPassword(String password, Integer keySize) throws Exception {
+    public final SecretKey generateSecretKeyFromPassword(final String password, final Integer keySize)
+    throws Exception {
         char[] passwordChar = password.toCharArray();
         byte[] salt = FIXED_SALT.getBytes();
 
@@ -77,7 +78,8 @@ public class EncryptionService {
         return new SecretKeySpec(secretKey.getEncoded(), AES);
     }
 
-    public String encryptKey(String privateKey, String password, Integer keySize) throws Exception {
+    public final String encryptKey(final String privateKey, final String password, final Integer keySize)
+    throws Exception {
         EncryptionService encryptionService = new EncryptionService();
         SecretKey secretKey = encryptionService.generateSecretKeyFromPassword(password, keySize);
         PrivateKey privateKeyDecoded = restorePrivateKey(privateKey);
@@ -89,7 +91,8 @@ public class EncryptionService {
         return Base64.getEncoder().encodeToString(encoded);
     }
 
-    public String decryptKey(String privateKey, String password, Integer keySize) throws Exception {
+    public final String decryptKey(final String privateKey, final String password, final Integer keySize)
+    throws Exception {
         try {
             byte[] privateKeyDecoded = Base64.getDecoder().decode(privateKey);
             SecretKey secretKey = generateSecretKeyFromPassword(password, keySize);
@@ -104,14 +107,14 @@ public class EncryptionService {
         }
     }
 
-    private PrivateKey restorePrivateKey(String privateKey) throws Exception {
+    private PrivateKey restorePrivateKey(final String privateKey) throws Exception {
         byte[] privateKeyBytes = Base64.getDecoder().decode(privateKey);
         KeyFactory keyFactory = KeyFactory.getInstance(RSA);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
         return keyFactory.generatePrivate(keySpec);
     }
 
-    private PublicKey restorePublicKey(String publicKey) throws Exception {
+    private PublicKey restorePublicKey(final String publicKey) throws Exception {
         byte[] publicKeyBytes = Base64.getDecoder().decode(publicKey);
         KeyFactory keyFactory = KeyFactory.getInstance(RSA);
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes);

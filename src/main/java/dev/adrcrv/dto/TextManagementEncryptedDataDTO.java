@@ -10,7 +10,7 @@ public class TextManagementEncryptedDataDTO {
 
     @NotNull
     private String privateKey;
-    
+
     @NotNull
     private String privateKeyPassword;
 }

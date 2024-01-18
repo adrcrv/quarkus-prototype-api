@@ -10,3 +10,6 @@ quarkus:
   hibernate-orm:
     database:
       generation: drop-and-create
+
+  jacoco:
+    excludes: ["**/entity/**/*", "**/dto/**/*", "**/repository/**/*", "**/constant/**/*", "**/exception/**/*"]

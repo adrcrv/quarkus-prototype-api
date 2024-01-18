@@ -32,7 +32,7 @@ public class TextManagementService {
     private EncryptionService encryptionService;
 
     @Transactional
-    public TextManagementGetResDTO getByParams(TextManagementGetReqDTO params) throws Exception {
+    public final TextManagementGetResDTO getByParams(final TextManagementGetReqDTO params) throws Exception {
         TextManagement data = textManagementRepository.findById(params.getId());
 
         if (data == null) {
@@ -49,7 +49,8 @@ public class TextManagementService {
         return payload;
     }
 
-    private TextManagementGetResDTO getEncryptedData(TextManagementGetReqDTO params, TextManagement data) throws Exception {
+    private TextManagementGetResDTO getEncryptedData(final TextManagementGetReqDTO params, final TextManagement data)
+    throws Exception {
 
         Set<ConstraintViolation<TextManagementEncryptedDataDTO>> dataViolations = encryptedDataViolations(params, data);
 
@@ -77,7 +78,8 @@ public class TextManagementService {
         return payload;
     }
 
-    private Set<ConstraintViolation<TextManagementEncryptedDataDTO>> encryptedDataViolations(TextManagementGetReqDTO params, TextManagement data) {
+    private Set<ConstraintViolation<TextManagementEncryptedDataDTO>> encryptedDataViolations(
+    final TextManagementGetReqDTO params, final TextManagement data) {
 
         TextManagementEncryptedDataDTO validations = new TextManagementEncryptedDataDTO();
         validations.setId(data.getId());
@@ -88,7 +90,7 @@ public class TextManagementService {
         return violations;
     }
 
-    private TextManagementGetResDTO getStandardData(TextManagement data) {
+    private TextManagementGetResDTO getStandardData(final TextManagement data) {
         TextManagementGetResDTO payload = new TextManagementGetResDTO();
         payload.setId(data.getId());
         payload.setTextData(data.getTextData());
@@ -97,7 +99,7 @@ public class TextManagementService {
     }
 
     @Transactional
-    public TextManagementPostResDTO create(TextManagementPostReqDTO body) throws Exception {
+    public final TextManagementPostResDTO create(final TextManagementPostReqDTO body) throws Exception {
         if (!body.getEncryption()) {
             TextManagement data = createStandardData(body);
             TextManagementPostResDTO payload = creationStandardPayloadBuilder(data);
@@ -113,7 +115,7 @@ public class TextManagementService {
         return payload;
     }
 
-    private TextManagement createStandardData(TextManagementPostReqDTO body) {
+    private TextManagement createStandardData(final TextManagementPostReqDTO body) {
         TextManagement data = new TextManagement();
         data.setTextData(body.getTextData());
         data.setEncryption(body.getEncryption());
@@ -123,13 +125,14 @@ public class TextManagementService {
         return data;
     }
 
-    private TextManagementPostResDTO creationStandardPayloadBuilder(TextManagement data) {
+    private TextManagementPostResDTO creationStandardPayloadBuilder(final TextManagement data) {
         TextManagementPostResDTO payload = new TextManagementPostResDTO();
         payload.setId(data.getId());
         return payload;
     }
 
-    private TextManagement createEncryptedData(TextManagementPostReqDTO body, KeyPairDTO keyPair) throws Exception {
+    private TextManagement createEncryptedData(final TextManagementPostReqDTO body, final KeyPairDTO keyPair)
+            throws Exception {
         String privateKey = keyPair.getPrivateKey();
         String publicKey = keyPair.getPublicKey();
 
@@ -151,7 +154,8 @@ public class TextManagementService {
         return data;
     }
 
-    private TextManagementPostResDTO creationEncryptedPayloadBuilder(TextManagement data, String privateKey) {
+    private TextManagementPostResDTO creationEncryptedPayloadBuilder(
+            final TextManagement data, final String privateKey) {
         TextManagementPostResDTO payload = new TextManagementPostResDTO();
         payload.setId(data.getId());
         payload.setPrivateKey(privateKey);

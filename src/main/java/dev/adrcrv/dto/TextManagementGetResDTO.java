@@ -11,7 +11,7 @@ import lombok.Data;
 @JsonInclude(Include.NON_NULL)
 public class TextManagementGetResDTO {
     @NotNull
-    private Long Id;
+    private Long id;
 
     @NotEmpty
     private String textData;

@@ -1,5 +1,6 @@
 package dev.adrcrv.entity;
 
+import dev.adrcrv.constant.EncryptConstant;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +14,7 @@ public class TextManagement {
     @GeneratedValue
     @Column
     private Long id;
-    
+
     @Column
     private String textData;
 
@@ -23,9 +24,9 @@ public class TextManagement {
     @Column
     private Integer keySize;
 
-    @Column(length = 1024)
+    @Column(length = EncryptConstant.KEY_LENGTH_LIMIT)
     private String privateKey;
 
-    @Column(length = 1024)
+    @Column(length = EncryptConstant.KEY_LENGTH_LIMIT)
     private String publicKey;
 }

@@ -9,7 +9,7 @@ import jakarta.ws.rs.ext.Provider;
 public class ThrowableMapperException implements ExceptionMapper<WebApplicationException> {
 
     @Override
-    public Response toResponse(WebApplicationException exception) {
+    public final Response toResponse(final WebApplicationException exception) {
         Integer statusCode = exception.getResponse().getStatus();
         ThrowableResponseException payload = new ThrowableResponseException(exception.getMessage());
         return Response.status(statusCode).entity(payload).build();

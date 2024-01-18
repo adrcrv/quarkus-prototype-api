@@ -12,5 +12,5 @@ public class TextManagementPostResDTO {
     @NotNull
     private Long id;
 
-    private String privateKey;    
+    private String privateKey;
 }

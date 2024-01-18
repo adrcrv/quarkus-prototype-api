@@ -13,7 +13,7 @@ import jakarta.ws.rs.ext.Provider;
 public class ConstraintViolationMapperException implements ExceptionMapper<ConstraintViolationException> {
 
     @Override
-    public Response toResponse(ConstraintViolationException exception) {
+    public final Response toResponse(final ConstraintViolationException exception) {
         List<ConstraintViolationContentException> contents = exception.getConstraintViolations().stream()
                 .map(this::toResponseMapHandler)
                 .collect(Collectors.toList());
@@ -22,15 +22,15 @@ public class ConstraintViolationMapperException implements ExceptionMapper<Const
         return Response.status(Response.Status.BAD_REQUEST).entity(response).build();
     }
 
-    private ConstraintViolationContentException toResponseMapHandler(ConstraintViolation<?> constraintViolation) {
+    private ConstraintViolationContentException toResponseMapHandler(final ConstraintViolation<?> constraintViolation) {
         String propertyPath = constraintViolation.getPropertyPath().toString();
         String message = constraintViolation.getMessage();
 
-        ConstraintViolationContentException constraintViolationExceptionContent = new ConstraintViolationContentException();
-        constraintViolationExceptionContent.setReference(propertyPath);
-        constraintViolationExceptionContent.setMessage(message);
+        ConstraintViolationContentException exceptionContent = new ConstraintViolationContentException();
+        exceptionContent.setReference(propertyPath);
+        exceptionContent.setMessage(message);
 
-        return constraintViolationExceptionContent;
+        return exceptionContent;
     }
 
 }

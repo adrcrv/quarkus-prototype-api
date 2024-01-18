@@ -13,11 +13,11 @@ public class TextManagementGetReqDTO {
 
     @RestQuery
     private String privateKey;
-    
+
     @RestQuery
     private String privateKeyPassword;
 
-    public String getPrivateKey() {
+    public final String getPrivateKey() {
         return privateKey != null ? privateKey.replace("\s", "+") : null;
     }
 }

@@ -29,26 +29,26 @@ public class TextManagementServiceTest {
     @Inject
     private TextManagementService textManagementService;
 
-    private static Long STANDARD_ID;
-    private static Long ENCRYPTED_ID;
-    private static String PRIVATE_KEY;
+    private static Long standardId;
+    private static Long encryptedIt;
+    private static String privateKey;
 
     private static final String TEXT_DATA = "Hello World";
     private static final String PRIVATE_KEY_PASSWORD = "Vrg7$$@0ktEHrBUO79V5WbI5";
     private static final Integer KEY_SIZE = 1024;
 
     @BeforeAll
-    public void setupStandardData() throws Exception {
+    public final void setupStandardData() throws Exception {
         TextManagementPostReqDTO textManagement = new TextManagementPostReqDTO();
         textManagement.setEncryption(false);
         textManagement.setTextData(TEXT_DATA);
 
         TextManagementPostResDTO payload = textManagementService.create(textManagement);
-        STANDARD_ID = payload.getId();
+        standardId = payload.getId();
     }
 
     @BeforeAll
-    public void setupEncryptedData() throws Exception {
+    public final void setupEncryptedData() throws Exception {
         TextManagementPostReqDTO textManagement = new TextManagementPostReqDTO();
         textManagement.setEncryption(true);
         textManagement.setPrivateKeyPassword(PRIVATE_KEY_PASSWORD);
@@ -56,8 +56,8 @@ public class TextManagementServiceTest {
         textManagement.setTextData(TEXT_DATA);
 
         TextManagementPostResDTO payload = textManagementService.create(textManagement);
-        ENCRYPTED_ID = payload.getId();
-        PRIVATE_KEY = payload.getPrivateKey();
+        encryptedIt = payload.getId();
+        privateKey = payload.getPrivateKey();
     }
 
     @Test
@@ -75,7 +75,7 @@ public class TextManagementServiceTest {
         TextManagement textManagement = new TextManagement();
         textManagement.setId(id);
         textManagement.setEncryption(false);
-        
+
         TextManagementRepository textManagementRepository = mock(TextManagementRepository.class);
         when(textManagementRepository.findById(id)).thenReturn(textManagement);
         QuarkusMock.installMockForType(textManagementRepository, TextManagementRepository.class);
@@ -89,12 +89,12 @@ public class TextManagementServiceTest {
     @Test
     public void expectGetByParamsStandardDataAssertEquals() throws Exception {
         TextManagementGetReqDTO params = new TextManagementGetReqDTO();
-        params.setId(STANDARD_ID);
+        params.setId(standardId);
 
         TextManagementGetResDTO received = textManagementService.getByParams(params);
 
         TextManagementGetResDTO expected = new TextManagementGetResDTO();
-        expected.setId(STANDARD_ID);
+        expected.setId(standardId);
         expected.setTextData(TEXT_DATA);
         expected.setEncryption(false);
 
@@ -104,14 +104,14 @@ public class TextManagementServiceTest {
     @Test
     public void expectGetByParamsEncryptedAssertEquals() throws Exception {
         TextManagementGetReqDTO params = new TextManagementGetReqDTO();
-        params.setId(ENCRYPTED_ID);
-        params.setPrivateKey(PRIVATE_KEY);
+        params.setId(encryptedIt);
+        params.setPrivateKey(privateKey);
         params.setPrivateKeyPassword(PRIVATE_KEY_PASSWORD);
 
         TextManagementGetResDTO received = textManagementService.getByParams(params);
 
         TextManagementGetResDTO expected = new TextManagementGetResDTO();
-        expected.setId(ENCRYPTED_ID);
+        expected.setId(encryptedIt);
         expected.setEncryption(true);
         expected.setTextData(TEXT_DATA);
 
@@ -121,7 +121,7 @@ public class TextManagementServiceTest {
     @Test
     public void expectGetByParamsEncryptedDataThrowBadRequest() throws Exception {
         TextManagementGetReqDTO params = new TextManagementGetReqDTO();
-        params.setId(ENCRYPTED_ID);
+        params.setId(encryptedIt);
 
         Assertions.assertThrows(ConstraintViolationException.class, () -> textManagementService.getByParams(params));
     }
@@ -129,8 +129,8 @@ public class TextManagementServiceTest {
     @Test
     public void expectGetByParamsEncryptedDataWithInvalidPasswordThrowForbidden() throws Exception {
         TextManagementGetReqDTO params = new TextManagementGetReqDTO();
-        params.setId(ENCRYPTED_ID);
-        params.setPrivateKey(PRIVATE_KEY);
+        params.setId(encryptedIt);
+        params.setPrivateKey(privateKey);
         params.setPrivateKeyPassword("Wr0ng#P4ssw0rd");
 
         Assertions.assertThrows(ForbiddenException.class, () -> textManagementService.getByParams(params));
@@ -139,7 +139,7 @@ public class TextManagementServiceTest {
     @Test
     public void expectGetByParamsEncryptedDataWithInvalidPrivateKeyThrowForbidden() throws Exception {
         TextManagementGetReqDTO params = new TextManagementGetReqDTO();
-        params.setId(ENCRYPTED_ID);
+        params.setId(encryptedIt);
         params.setPrivateKey("Wr0ng#Priv4te@Key");
         params.setPrivateKeyPassword(PRIVATE_KEY_PASSWORD);
 
