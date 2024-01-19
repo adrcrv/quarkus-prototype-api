@@ -1,68 +1,96 @@
-# quarkus-prototype-api
-
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
-
+## 🤖 quarkus-prototype-api
+This project uses Quarkus, the Supersonic Subatomic Java Framework.  
 If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
 
-## Running the application in dev mode
+This API empowers to encrypt plaintext messages securely using both RSA and AES algorithms. Easily crypt plaintext messages, store them, and retrieve them later, ensuring robust protection for valuable information.
 
-You can run your application in dev mode that enables live coding using:
+---
+### 🔍 Features
+- RSA Encryption: Employ the RSA algorithm for secure asymmetric encryption.
+- AES Encryption: Utilize the AES algorithm for efficient symmetric encryption. Used to protect the private key
+
+---
+
+### 📋 Requirements
+[Docker (v24.0+)](https://get.docker.com/)  
+[OpenJDK (v17.1+)](https://sdkman.io/jdks/)  
+
+_Docker is the only requirement for tests, checks, and runtime._  
+_For development purposes, OpenJDK can be easily provided by [SdkMan](https://sdkman.io/jdks/)._  
+
+---
+
+### 🛠️ Running in Dev Mode
+
+Run the application in dev mode that enables live coding using:
 ```shell script
 ./mvnw compile quarkus:dev
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+_Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/__
 
-## Packaging and running the application
+---
 
+### 🚀 Packaging and Running
 The application can be packaged using:
 ```shell script
 ./mvnw package
 ```
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
 
 The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
 
-If you want to build an _über-jar_, execute the following command:
+_Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory._
+
+---
+
+For _über-jar_ build, execute the following command:
 ```shell script
 ./mvnw package -Dquarkus.package.type=uber-jar
 ```
 
 The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
 
-## Creating a native executable
+---
 
-You can create a native executable using: 
+### 🐳 Running in Container
+The application runtime can be set up by:
 ```shell script
-./mvnw package -Dnative
+# Build Image
+docker build -f src/main/docker/Dockerfile.jvm -t quarkus-prototype-api-jvm .
+
+# Run Tests
+docker run -it --rm quarkus-prototype-api-jvm
 ```
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
+_Now API is available at http://localhost:8080/q/swagger-ui/_
+
+---
+
+The tests can also be executed and validated using:
 ```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
+# Build Image
+docker build -f src/main/docker/Dockerfile.test -t quarkus-prototype-api-test .
+
+# Run Tests
+docker run -it --rm quarkus-prototype-api-test
 ```
 
-You can then execute your native executable with: `./target/quarkus-prototype-api-1.0.0-SNAPSHOT-runner`
+---
 
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
+### 📄 API Documentation
 
-## Related Guides
+- Swagger Documentation: The API is documented using Swagger. Access the Swagger UI at http://localhost:8080/q/swagger-ui to explore and test the API.  
 
-- Hibernate ORM ([guide](https://quarkus.io/guides/hibernate-orm)): Define your persistent model with Hibernate ORM and Jakarta Persistence
+- Postman Collection: A Postman collection is available for convenient API testing. Download the collection from `/dev/postman-collection.json` and import it into Postman workspace.
 
-## Provided Code
+---
 
-### Hibernate ORM
+### 📜 License
+This project is licensed under the MIT License.
 
-Create your first JPA entity
+---
 
-[Related guide section...](https://quarkus.io/guides/hibernate-orm)
+### ✍️ Author
+Made with ❤️. Get in Touch!
 
-
-
-### RESTEasy Reactive
-
-Easily start your Reactive RESTful Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+[![LinkedIn Badge](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/adrcrv/)
