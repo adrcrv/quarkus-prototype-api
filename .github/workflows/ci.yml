@@ -47,5 +47,5 @@ jobs:
     - name: Test Summary
       uses: test-summary/action@v2
       with:
-        paths: "target/jacoco-report/jacoco.xml"
+        paths: "target/surefire-reports/**/TEST-*.xml"
         if: always()
