@@ -19,14 +19,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
     
-    - name: Cache Maven dependencies
-      uses: actions/cache@v2
-      with:
-        path: ~/.m2/repository
-        key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          maven-${{ runner.os }}-
-
     - name: Install Dependencies
       run: ./mvnw dependency:resolve
 
@@ -42,20 +34,14 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    
-    - name: Restore Maven dependencies cache
-      uses: actions/cache@v2
-      with:
-        path: ~/.m2/repository
-        key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
 
-    - name: Install
+    - name: Install & Compile
       run: ./mvnw install -DskipTests
     
-    - name: Validate
+    - name: Validate & Checkstyle
       run: ./mvnw validate
 
-    - name: Tests
+    - name: Tests & Coverage
       run: ./mvnw verify
 
     - name: Test Summary
