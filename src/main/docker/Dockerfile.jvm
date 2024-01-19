@@ -3,10 +3,10 @@
 # https://github.com/quarkusio/quarkus-quickstarts/blob/main/neo4j-quickstart/src/main/docker/Dockerfile.jvm
 #
 # Build the image with:
-# docker build -f src/main/docker/Dockerfile.jvm -it quarkus/quarkus-prototype-api-jvm .
+# docker build -f src/main/docker/Dockerfile.jvm -it quarkus-prototype-api-jvm .
 #
 # Then run the container using:
-# docker run -i --rm -p 8080:8080 quarkus/quarkus-prototype-api-jvm
+# docker run -i --rm -p 8080:8080 quarkus-prototype-api-jvm
 ####
 
 # Builder
