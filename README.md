@@ -61,7 +61,7 @@ The application runtime can be set up by:
 docker build -f src/main/docker/Dockerfile.jvm -t quarkus-prototype-api-jvm .
 
 # Run Tests
-docker run -it --rm quarkus-prototype-api-jvm
+docker run -it --rm -p 8080:8080 quarkus-prototype-api-jvm
 ```
 
 _Now API is available at http://localhost:8080/q/swagger-ui/_
