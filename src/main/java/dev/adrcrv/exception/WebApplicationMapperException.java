@@ -6,12 +6,12 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
-public class ThrowableMapperException implements ExceptionMapper<WebApplicationException> {
+public class WebApplicationMapperException implements ExceptionMapper<WebApplicationException> {
 
     @Override
     public final Response toResponse(final WebApplicationException exception) {
         Integer statusCode = exception.getResponse().getStatus();
-        ThrowableResponseException payload = new ThrowableResponseException(exception.getMessage());
+        WebApplicationResponseException payload = new WebApplicationResponseException(exception.getMessage());
         return Response.status(statusCode).entity(payload).build();
     }
 }

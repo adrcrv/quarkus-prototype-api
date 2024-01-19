@@ -31,7 +31,7 @@ public class TextManagementPostReqDTO {
     @JsonIgnore
     @AssertTrue(message = "The field privateKeyPassword is required")
     private boolean isPrivateKeyPasswordRequired() {
-        if (!this.encryption) {
+        if (this.encryption == null || !this.encryption) {
             return true;
         }
         return this.privateKeyPassword != null;
@@ -40,7 +40,7 @@ public class TextManagementPostReqDTO {
     @JsonIgnore
     @AssertTrue(message = "The field keySize is required")
     private boolean isKeySizeRequired() {
-        if (!this.encryption) {
+        if (this.encryption == null || !this.encryption) {
             return true;
         }
         return this.keySize != null;
@@ -49,7 +49,7 @@ public class TextManagementPostReqDTO {
     @JsonIgnore
     @AssertTrue(message = "The field keySize must matches one of the values: [1024, 2048, 4096]")
     private boolean isKeySizeOneOfValues() {
-        if (!this.encryption) {
+        if (this.encryption == null || !this.encryption) {
             return true;
         }
         List<Integer> matchNumbers = new ArrayList<>(Arrays.asList(EncryptConstant.KEY_SIZES));

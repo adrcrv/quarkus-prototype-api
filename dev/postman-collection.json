@@ -1,0 +1,137 @@
+{
+	"info": {
+		"_postman_id": "a8661875-58d7-41ab-aea1-b20ea802e560",
+		"name": "quarkus-prototype-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3352601"
+	},
+	"item": [
+		{
+			"name": "text-management",
+			"item": [
+				{
+					"name": "query-standard-data",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/text-management?id=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"text-management"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create-standard-data",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"textData\": \"Hello World\",\n    \"encryption\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/text-management",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"text-management"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "query-encrypted-data",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/text-management?id=2&privateKey=QcCPk6rR83N8qkjU0LlroHNDUSf3jK8KRcjHlaKmXM7dWiGpI9599Yw6AiTj9vaI&privateKeyPassword=WxqfFSP@ui5UTu%2320yXa509H",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"text-management"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "2"
+								},
+								{
+									"key": "privateKey",
+									"value": "QcCPk6rR83N8qkjU0LlroHNDUSf3jK8KRcjHlaKmXM7dWiGpI9599Yw6AiTj9vaI"
+								},
+								{
+									"key": "privateKeyPassword",
+									"value": "WxqfFSP@ui5UTu#20yXa509H"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create-encrypted-data",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"textData\": \"Hello World\",\n    \"encryption\": true,\n    \"keySize\": 1024,\n    \"privateKeyPassword\": \"WxqfFSP@ui5UTu#20yXa509H\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/text-management",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"text-management"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
