@@ -27,7 +27,7 @@ Run the application in dev mode that enables live coding using:
 ./mvnw compile quarkus:dev
 ```
 
-_Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/__
+_Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/_
 
 ---
 
