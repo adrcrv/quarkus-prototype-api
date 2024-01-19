@@ -1,3 +1,5 @@
+[![Continuous Integration](https://github.com/adrcrv/quarkus-prototype-api/actions/workflows/ci.yml/badge.svg)](https://github.com/adrcrv/quarkus-prototype-api/actions/workflows/ci.yml)
+
 ## 🤖 quarkus-prototype-api
 This project uses Quarkus, the Supersonic Subatomic Java Framework.  
 If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
