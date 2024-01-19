@@ -56,4 +56,4 @@ jobs:
         covered=$(cat target/jacoco-report/jacoco.xml | grep -oP '<counter type="LINE" missed="\d+" covered="\K\d+' | tail -1)
         total=$(( $missed + $covered ))
         percentage=$((($covered * 100) / $total))
-        echo "📊 Coverage: ${percentage}% >> $GITHUB_STEP_SUMMARY
+        echo "📊 Coverage: ${percentage}%" >> $GITHUB_STEP_SUMMARY
