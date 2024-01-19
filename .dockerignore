@@ -1,5 +1,13 @@
-*
-!target/*-runner
-!target/*-runner.jar
-!target/lib/*
-!target/quarkus-app/*
+# IDE
+.idea
+.vscode/
+
+# Git
+.git/
+
+# Docker
+src/main/docker/
+.dockerignore
+
+# Project
+target/

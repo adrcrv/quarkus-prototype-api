@@ -1,0 +1,23 @@
+####
+# This Dockerfile is used in order to build a container that runs the Quarkus application in JVM mode
+# https://github.com/quarkusio/quarkus-quickstarts/blob/main/neo4j-quickstart/src/main/docker/Dockerfile.jvm
+#
+# Build the image with:
+# docker build -f src/main/docker/Dockerfile.test -t quarkus/quarkus-prototype-api-test .
+#
+# Then run the container using:
+# docker run -it --rm quarkus/quarkus-prototype-api-test
+####
+
+FROM registry.access.redhat.com/ubi8/openjdk-17:1.18
+
+WORKDIR /work/
+
+COPY .mvn/ ./.mvn/
+COPY mvnw mvnw.cmd pom.xml ./
+RUN ./mvnw dependency:resolve
+
+COPY . .
+RUN ./mvnw install -DskipTests
+
+CMD ["/bin/bash", "./mvnw", "test"]
