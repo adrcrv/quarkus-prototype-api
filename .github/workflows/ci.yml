@@ -20,7 +20,7 @@ jobs:
         cache: maven
         
     - name: Install Dependencies
-      run: ./mvnw dependency:resolve
+      run: ./mvnw install -DskipTests
 
   validations:
     runs-on: ubuntu-latest
